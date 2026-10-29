@@ -473,6 +473,110 @@ svg {
   align-items: center;
   gap: 19px;
 }
+.reminder-trigger {
+  position: relative;
+  width: 34px;
+  height: 34px;
+}
+.reminder-count {
+  position: absolute;
+  top: -3px;
+  right: -4px;
+  display: grid;
+  place-items: center;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 3px;
+  border-radius: 10px;
+  font-size: 8px;
+  font-weight: 700;
+  color: white;
+  background: var(--rose);
+  border: 2px solid var(--surface);
+}
+.reminder-summary {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+.reminder-summary > span {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-size: 11px;
+  color: var(--muted);
+}
+.reminder-summary strong {
+  color: var(--foreground);
+  font-size: 16px;
+}
+.reminder-list {
+  display: flex;
+  flex-direction: column;
+}
+.reminder-list a {
+  padding: 13px 0;
+  border-bottom: 1px solid var(--border);
+}
+.reminder-list a:hover strong {
+  color: var(--accent);
+}
+.reminder-list span {
+  display: block;
+  color: var(--muted);
+  font-size: 10px;
+}
+.reminder-list strong {
+  display: block;
+  margin-top: 4px;
+  font-size: 12px;
+  overflow-wrap: anywhere;
+}
+.reminder-links {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 15px;
+  margin-top: 20px;
+}
+.reminder-empty {
+  padding: 15px 0;
+  color: var(--muted);
+  font-size: 12px;
+}
+.reminder-option {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  padding: 15px;
+}
+.reminder-option > span {
+  flex: 1;
+  min-width: 0;
+}
+.reminder-option strong {
+  display: block;
+  font-size: 12px;
+}
+.reminder-option small {
+  display: block;
+  color: var(--muted);
+  margin-top: 4px;
+  font-size: 11px;
+  line-height: 1.7;
+}
+.reminder-option > input {
+  width: 18px;
+  height: 18px;
+  flex: 0 0 18px;
+  accent-color: var(--accent);
+}
 .private-label {
   display: inline-flex;
   gap: 5px;

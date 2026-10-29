@@ -52,6 +52,7 @@ try {
     "/finance",
     "/settings",
     "/dev-preview",
+    "/api/cron/task-reminders",
     "/icon.svg",
   ]) {
     const response = await fetch(origin + path, {
@@ -68,7 +69,15 @@ try {
         path + " harus dilindungi auth/config.",
       );
     } else
-      assert.equal(response.status, path === "/dev-preview" ? 404 : 200, path);
+      assert.equal(
+        response.status,
+        path === "/dev-preview"
+          ? 404
+          : path === "/api/cron/task-reminders"
+            ? 401
+            : 200,
+        path,
+      );
     console.log(path + " => " + response.status + " OK");
   }
 } finally {

@@ -8,10 +8,10 @@ Tanggal: 29 Oktober 2026 (Asia/Jakarta).
 | --------------------------------------- | ---------------------------------------------------------------- |
 | ESLint                                  | Lulus, tanpa warning/error                                       |
 | Next route type generation + TypeScript | Lulus                                                            |
-| Unit dan integrasi PostgreSQL           | 75 test lulus dalam 4 suite                                      |
+| Unit dan integrasi PostgreSQL           | 98 test lulus dalam 8 suite                                      |
 | Build produksi Next.js                  | Lulus                                                            |
 | Playwright/Edge lokal                   | 6 test lulus, 2 test backend live skipped                        |
-| Smoke server produksi                   | 7 pemeriksaan HTTP lulus; fixture development ditolak dengan 404 |
+| Smoke server produksi                   | 8 pemeriksaan HTTP lulus; fixture development ditolak dengan 404 |
 | Prettier                                | Lulus                                                            |
 
 Pengujian browser mencakup halaman konfigurasi dan redirect, layout workspace fixture pada lebar 320/390/768/1440, modal tugas/transaksi, label dan fokus awal/kembali, keyboard Escape, konfirmasi isian belum tersimpan, kontrol transfer, sidebar collapse, drawer mobile, tema gelap, tanpa horizontal overflow dan tanpa error JavaScript.
@@ -19,6 +19,8 @@ Pengujian browser mencakup halaman konfigurasi dan redirect, layout workspace fi
 Fixture UI hanya tersedia di development dengan flag test eksplisit. Tidak dipakai pada dashboard pengguna; `/dev-preview` mengembalikan 404 di produksi.
 
 ## Database dan keamanan
+
+Tambahan pengingat tugas: migration `202610290002_task_reminders.sql` diuji dengan role authenticated/anon/service_role pada PostgreSQL WASM. Lulus untuk due/overdue WIB, pengecualian task selesai/tanpa tanggal/masa depan, consent dan penerima terverifikasi, isolasi tenant, pembatalan setelah opt-out/selesai, unique user/tanggal, retry snapshot, fencing token, batas percobaan, dan kedaluwarsa. Worker dan endpoint cron diuji tanpa mengirim email nyata; header tidak sah ditolak sebelum mengakses admin DB. UI lonceng/dialog/preferensi diuji pada 320/390/1440px tanpa horizontal overflow. Flag fixture development sementara dikembalikan sesudah pemeriksaan. Konfigurasi pengirim, migration hosted, dan pengiriman email/cron live masih memerlukan setup pemilik menurut REMINDERS.md.
 
 Tambahan regresi Auth memverifikasi bahwa Server Action mempertahankan pesan limit email dan kegagalan SMTP, bahwa registrasi tanpa session tetap meminta verifikasi, dan bahwa pesan publik/log diagnostik tidak memuat email, password, token, pesan SQL mentah, atau konfirmasi keberadaan akun. Pengujian menggunakan mock SDK tanpa request signup atau email sungguhan.
 

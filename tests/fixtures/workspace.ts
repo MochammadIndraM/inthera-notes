@@ -140,3 +140,15 @@ export const fixtureSummary: Summary = {
   ),
   categories: [{ id: id(4), name: "Makanan & Minuman", amount: "50000" }],
 };
+fixtureWorkspace.reminders = {
+  preferences: { in_app_enabled: true, email_enabled: false },
+  migrationRequired: false,
+  unavailable: false,
+  dueCount: 1,
+  overdueCount: 1,
+  tasks: fixtureTasks.map((task) => ({
+    id: task.id,
+    title: task.title,
+    due_date: task.due_date!,
+  })),
+};

@@ -4,6 +4,8 @@ import { PageHeading, Panel } from "@/components/shared";
 import { SettingsForm } from "@/components/settings-form";
 import { CategoryEditor } from "@/components/record-forms";
 import { ArchiveButton } from "@/components/record-actions";
+import { ReminderSettings } from "@/components/reminder-settings";
+import { reminderEmailConfig } from "@/lib/reminders/config";
 export const metadata = { title: "Pengaturan" };
 export default async function Settings() {
   const [workspace, { user }] = await Promise.all([
@@ -65,6 +67,23 @@ export default async function Settings() {
           </Panel>
         </div>
       </div>
+      {workspace.reminders && (
+        <section id="reminders">
+          <Panel
+            title="Pengingat tugas"
+            subtitle="Tenggat hari ini dan tugas yang perlu perhatian"
+          >
+            <div className="padded">
+              <ReminderSettings
+                state={workspace.reminders}
+                emailReady={!!reminderEmailConfig()}
+                emailVerified={!!user.email_confirmed_at}
+                email={user.email ?? ""}
+              />
+            </div>
+          </Panel>
+        </section>
+      )}
     </>
   );
 }

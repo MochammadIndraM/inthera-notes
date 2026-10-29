@@ -11,8 +11,8 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:e2e": "playwright test",
-    "format": "prettier --write app components lib tests *.ts *.mts *.mjs README.md VALIDATION.md package.json",
-    "format:check": "prettier --check app components lib tests *.ts *.mts *.mjs README.md VALIDATION.md package.json",
+    "format": "prettier --write app components lib tests *.ts *.mts *.mjs README.md REMINDERS.md VALIDATION.md package.json vercel.json",
+    "format:check": "prettier --check app components lib tests *.ts *.mts *.mjs README.md REMINDERS.md VALIDATION.md package.json vercel.json",
     "test:production": "node tests/production-smoke.mjs"
   },
   "dependencies": {

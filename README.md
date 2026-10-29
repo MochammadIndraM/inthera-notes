@@ -119,6 +119,8 @@ E2E_BASE_URL=
 
 ## File penting
 
+Pengingat tugas di aplikasi dan email tersedia sebagai tambahan setelah MVP. Ikon lonceng menunjukkan tugas hari ini/terlambat; email ringkasan pagi dapat diaktifkan per pengguna. Email membutuhkan migration `202610290002_task_reminders.sql`, Resend, service-role key khusus server, dan Vercel Cron. Panduan lengkap: [REMINDERS.md](REMINDERS.md).
+
 - `app/(workspace)/`: dashboard, tugas/proyek, keuangan, anggaran/laporan, settings.
 - `app/(auth)/`, `app/auth/callback/`, `app/reset-password/`: alur autentikasi.
 - `app/setup/`: state konfigurasi belum tersedia.
@@ -132,6 +134,6 @@ E2E_BASE_URL=
 
 Lihat `VALIDATION.md` untuk hasil pemeriksaan implementasi ini. Supabase live, pengiriman email, dan E2E terhadap layanan tersebut hanya dapat diverifikasi setelah pemilik mengisi credentials dan menerapkan migration. PGlite memverifikasi PostgreSQL/RLS sebenarnya, tetapi bukan layanan Supabase Auth/SMTP/PostgREST hosted.
 
-Halaman histori dipaginasi. Daftar konfigurasi akun/kategori/proyek ditujukan untuk workspace pribadi dan memakai batas respons standar project Supabase (umumnya 1.000 record per daftar); histori transaksi dan export tidak mengandalkan batas itu. Ekspor memuat satu dokumen hasil SQL di memori server; untuk dataset sangat besar, pertimbangkan background export. Tidak ada reminder, sync bank, multiuser, offline sync, atau fitur P2.
+Halaman histori dipaginasi. Daftar konfigurasi akun/kategori/proyek ditujukan untuk workspace pribadi dan memakai batas respons standar project Supabase (umumnya 1.000 record per daftar); histori transaksi dan export tidak mengandalkan batas itu. Ekspor memuat satu dokumen hasil SQL di memori server; untuk dataset sangat besar, pertimbangkan background export. Pengingat tugas dijelaskan di REMINDERS.md. Sync bank, multiuser, offline sync, dan fitur P2 lain belum diimplementasikan.
 
 Referensi implementasi auth: [Supabase SSR untuk Next.js](https://supabase.com/docs/guides/auth/server-side/creating-a-client). Konvensi Next.js diperiksa terhadap dokumentasi versi terpasang pada `node_modules/next/dist/docs/`.

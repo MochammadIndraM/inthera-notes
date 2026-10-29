@@ -18,6 +18,7 @@ import {
   fixtureWorkspace,
 } from "@/tests/fixtures/workspace";
 import { money, todayWib } from "@/lib/domain";
+import { ReminderSettings } from "@/components/reminder-settings";
 
 export default function DevPreview() {
   if (
@@ -101,6 +102,18 @@ export default function DevPreview() {
           workspace={fixtureWorkspace}
         />
       </Panel>
+      {fixtureWorkspace.reminders && (
+        <Panel title="Preferensi pengingat · fixture">
+          <div className="padded">
+            <ReminderSettings
+              state={fixtureWorkspace.reminders}
+              emailReady={false}
+              emailVerified
+              email="fixture@example.test"
+            />
+          </div>
+        </Panel>
+      )}
     </AppShell>
   );
 }

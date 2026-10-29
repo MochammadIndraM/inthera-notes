@@ -28,6 +28,7 @@ import type { Workspace } from "@/lib/types";
 import { signOut } from "@/lib/actions/auth";
 import { ActionButton } from "./record-actions";
 import { TaskEditor, TransactionEditor } from "./record-forms";
+import { TaskReminders } from "./task-reminders";
 
 export const navigation = [
   { label: "Dashboard", href: "/dashboard", icon: House, group: "WORKSPACE" },
@@ -235,6 +236,12 @@ export function AppShell({
             <strong>{title}</strong>
           </div>
           <div className="topbar-actions">
+            {workspace.reminders && (
+              <TaskReminders
+                state={workspace.reminders}
+                today={workspace.today}
+              />
+            )}
             <span className="private-label">
               <ShieldCheck size={14} />
               Pribadi & aman

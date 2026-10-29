@@ -2,6 +2,7 @@ import "server-only";
 import { cache } from "react";
 import { z } from "zod";
 import { requireUser } from "@/lib/supabase/server";
+import { getReminders } from "@/lib/reminders/queries";
 import { monthRange, nextDay, todayWib, validDate } from "@/lib/domain";
 import type {
   Account,
@@ -49,36 +50,40 @@ export function period(params: SearchParams) {
 }
 export const getWorkspace = cache(async (): Promise<Workspace> => {
   const { client, user } = await requireUser();
-  const results = await Promise.all([
-    client
-      .from("profiles")
-      .select("id,display_name,theme")
-      .eq("id", user.id)
-      .single<Profile>(),
-    client
-      .from("account_balances")
-      .select("id,name,type,opening_balance,opened_on,is_archived,balance")
-      .eq("user_id", user.id)
-      .order("name")
-      .returns<Account[]>(),
-    client
-      .from("financial_categories")
-      .select("id,name,type,is_archived")
-      .eq("user_id", user.id)
-      .order("name")
-      .returns<Category[]>(),
-    client
-      .from("projects")
-      .select("id,name,description,color,is_archived")
-      .eq("user_id", user.id)
-      .order("created_at")
-      .returns<Project[]>(),
+  const [results, reminders] = await Promise.all([
+    Promise.all([
+      client
+        .from("profiles")
+        .select("id,display_name,theme")
+        .eq("id", user.id)
+        .single<Profile>(),
+      client
+        .from("account_balances")
+        .select("id,name,type,opening_balance,opened_on,is_archived,balance")
+        .eq("user_id", user.id)
+        .order("name")
+        .returns<Account[]>(),
+      client
+        .from("financial_categories")
+        .select("id,name,type,is_archived")
+        .eq("user_id", user.id)
+        .order("name")
+        .returns<Category[]>(),
+      client
+        .from("projects")
+        .select("id,name,description,color,is_archived")
+        .eq("user_id", user.id)
+        .order("created_at")
+        .returns<Project[]>(),
+    ]),
+    getReminders(),
   ]);
   if (results.some((result) => result.error || !result.data))
     throw new Error(
       "Database belum dapat dimuat. Periksa koneksi dan pastikan migration IntheraNotes sudah diterapkan.",
     );
   return {
+    reminders,
     today: todayWib(),
     profile: results[0].data!,
     accounts: results[1].data!,

@@ -70,6 +70,7 @@ export type Summary = {
   categories: { id: string; name: string; amount: string }[];
 };
 export type Workspace = {
+  reminders?: import("./reminders/types").ReminderState;
   today: string;
   profile: Profile;
   accounts: Account[];
