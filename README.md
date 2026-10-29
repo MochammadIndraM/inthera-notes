@@ -55,6 +55,8 @@ Aplikasi menampilkan pesan khusus untuk limit email, terlalu banyak request, ala
 
 ## Fitur yang diimplementasikan
 
+- PWA installable untuk HP/desktop, ikon layar utama, panduan iPhone, halaman offline, indikator koneksi, dan pembaruan atas persetujuan pengguna. Panduan instalasi serta batas offline: [PWA.md](PWA.md).
+
 - Email/password: registrasi, login, logout, callback verifikasi, lupa/reset password, proteksi halaman dan mutasi.
 - Dashboard gabungan: tugas aktif, selesai hari ini, fokus hari ini/overdue, saldo semua akun, pengeluaran, arus kas, transaksi terbaru, dan quick add.
 - Tugas: tambah/edit/hapus, deskripsi, tanggal kalender, prioritas, status, selesai/buka kembali, proyek, search, filter status/prioritas/proyek/tanggal, sorting, dan pagination server.
@@ -96,7 +98,7 @@ npm run format:check
 - `typecheck` menjalankan `next typegen` sebelum TypeScript.
 - Vitest menguji parser IDR, presisi BIGINT, WIB/date boundary, status tugas, sanitasi CSV, redirect, dan validasi.
 - Suite integrasi menjalankan **migration SQL asli di PostgreSQL WASM (PGlite)**, bukan mock query. Bootstrap `auth.users`, role, dan `auth.uid()` test terpisah dari produksi. Diuji: RLS semua entitas/view/RPC, manipulasi pemilik, relasi lintas user, kategori salah tipe, nominal invalid, arsip, ledger/edit/delete, budget, completed_at, penghapusan proyek, export >1.000 baris, dan angka penerimaan PRD.
-- Pada Windows, Playwright memakai Edge terpasang. Sistem lain: `npx playwright install chromium`, lalu jalankan test. Browser channel dapat diatur dengan `E2E_BROWSER_CHANNEL`. Suite membuka dev server terisolasi pada port 3100 dan menutupnya setelah selesai.
+- Pada Windows, Playwright memakai Edge terpasang. Sistem lain: `npx playwright install chromium`, lalu jalankan test. Browser channel dapat diatur dengan `E2E_BROWSER_CHANNEL`. Suite membuka dev server terisolasi pada port 3100 dengan cache `.next-e2e`, lalu menutupnya setelah selesai; server kerja pada port 3000 dapat tetap berjalan.
 - Browser test tanpa backend memeriksa setup, redirect tanpa konfigurasi, layout 320/390/768/1440, dialog/label/fokus/keyboard, transfer controls, sidebar/mobile drawer, dan tema gelap.
 - `test:production` memerlukan build terlebih dahulu; menjalankan server sementara di port 3101, memeriksa proteksi halaman dan memastikan fixture tidak dapat diakses di produksi. Redirect setelah streaming dapat memiliki HTTP 200 dengan meta redirect; browser tetap diarahkan sebelum konten privat dimuat.
 

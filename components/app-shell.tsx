@@ -29,6 +29,8 @@ import { signOut } from "@/lib/actions/auth";
 import { ActionButton } from "./record-actions";
 import { TaskEditor, TransactionEditor } from "./record-forms";
 import { TaskReminders } from "./task-reminders";
+import { InstallAppButton } from "./pwa-install";
+import { PwaInstallBanner } from "./pwa-provider";
 
 export const navigation = [
   { label: "Dashboard", href: "/dashboard", icon: House, group: "WORKSPACE" },
@@ -167,6 +169,7 @@ export function AppShell({
           <Settings2 size={19} />
           <span>Pengaturan</span>
         </Link>
+        <InstallAppButton className="nav-item pwa-nav-install" compact />
         <div className="sidebar-profile">
           <span className="avatar">{name.slice(0, 2).toUpperCase()}</span>
           <Link href="/settings" onClick={() => setDrawer(false)}>
@@ -276,6 +279,9 @@ export function AppShell({
           </div>
         </header>
         <main id="main-content" className="page-content">
+          <PwaInstallBanner>
+            <InstallAppButton className="btn primary small" />
+          </PwaInstallBanner>
           {children}
         </main>
         <footer className="page-footer">

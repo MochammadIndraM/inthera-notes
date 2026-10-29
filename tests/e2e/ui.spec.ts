@@ -32,6 +32,10 @@ for (const width of [320, 390, 768, 1440]) {
     await page.setViewportSize({ width, height: 960 });
     const errors: string[] = [];
     page.on("pageerror", (error) => errors.push(error.message));
+    page.on("console", (message) => {
+      if (message.type() === "error" && /hydrat/i.test(message.text()))
+        errors.push(message.text());
+    });
     await page.goto("/dev-preview");
     await expect(
       page.getByRole("heading", { name: "Selamat datang, Pengguna." }),
@@ -44,6 +48,7 @@ for (const width of [320, 390, 768, 1440]) {
     await page.screenshot({
       path: `test-results/workspace-${width}-light.png`,
       fullPage: true,
+      caret: "initial",
     });
     await page
       .getByRole("button", { name: "Tambah tugas", exact: true })
@@ -120,6 +125,7 @@ for (const width of [320, 390, 768, 1440]) {
     await page.screenshot({
       path: `test-results/workspace-${width}-dark.png`,
       fullPage: true,
+      caret: "initial",
     });
   });
 }

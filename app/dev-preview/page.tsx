@@ -19,6 +19,7 @@ import {
 } from "@/tests/fixtures/workspace";
 import { money, todayWib } from "@/lib/domain";
 import { ReminderSettings } from "@/components/reminder-settings";
+import { PwaSettings } from "@/components/pwa-install";
 
 export default function DevPreview() {
   if (
@@ -114,6 +115,7 @@ export default function DevPreview() {
           </div>
         </Panel>
       )}
+      <PwaSettings />
     </AppShell>
   );
 }

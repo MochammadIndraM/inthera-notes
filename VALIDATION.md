@@ -8,13 +8,18 @@ Tanggal: 29 Oktober 2026 (Asia/Jakarta).
 | --------------------------------------- | ---------------------------------------------------------------- |
 | ESLint                                  | Lulus, tanpa warning/error                                       |
 | Next route type generation + TypeScript | Lulus                                                            |
-| Unit dan integrasi PostgreSQL           | 98 test lulus dalam 8 suite                                      |
+| Unit dan integrasi PostgreSQL           | 108 test lulus dalam 9 suite                                     |
 | Build produksi Next.js                  | Lulus                                                            |
-| Playwright/Edge lokal                   | 6 test lulus, 2 test backend live skipped                        |
+| Playwright/Edge lokal                   | 14 test lulus, 2 test skipped sesuai konfigurasi                 |
+| PWA pada build produksi                 | 6 test browser lulus                                             |
 | Smoke server produksi                   | 8 pemeriksaan HTTP lulus; fixture development ditolak dengan 404 |
 | Prettier                                | Lulus                                                            |
 
 Pengujian browser mencakup halaman konfigurasi dan redirect, layout workspace fixture pada lebar 320/390/768/1440, modal tugas/transaksi, label dan fokus awal/kembali, keyboard Escape, konfirmasi isian belum tersimpan, kontrol transfer, sidebar collapse, drawer mobile, tema gelap, tanpa horizontal overflow dan tanpa error JavaScript.
+
+Tambahan PWA: manifest dan dimensi PNG/Apple/maskable, header worker, service worker produksi sebenarnya, navigasi offline dan retry, cache yang hanya berisi lima aset publik, serta form offline yang mempertahankan isian tanpa mengirim POST. Prompt browser disimulasikan untuk menguji pembatalan; user agent iPhone dipakai untuk memeriksa panduan Safari pada 320px. Worker waiting terkontrol menguji penundaan pembaruan selama penyimpanan dan konfirmasi isian belum disimpan. Banner dapat ditunda dan mode standalone menyembunyikan ajakan pemasangan. Sepuluh test unit worker memeriksa cache publik, penghapusan cache versi lama, respons privat dari jaringan, pengecualian POST/API/RSC/Supabase, fallback, dan aktivasi eksplisit. Detail: [PWA.md](PWA.md).
+
+Suite development memakai cache/lock `.next-e2e` yang terpisah dari server kerja. Dua test yang dilewati adalah CRUD Supabase live tanpa credentials akun test dan redirect tanpa konfigurasi karena Supabase lokal sudah dikonfigurasi. Instalasi OS di perangkat fisik serta Safari sebenarnya belum diuji; tidak ada request signup, email, ataupun perubahan data Supabase dari pengujian PWA.
 
 Fixture UI hanya tersedia di development dengan flag test eksplisit. Tidak dipakai pada dashboard pengguna; `/dev-preview` mengembalikan 404 di produksi.
 

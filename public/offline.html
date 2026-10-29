@@ -1,0 +1,304 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+    />
+    <meta name="theme-color" content="#7559dc" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Koneksi terputus | IntheraNotes</title>
+    <style>
+      :root {
+        color-scheme: light;
+        --bg: #f8f9fc;
+        --card: #fff;
+        --text: #242331;
+        --muted: #6f7080;
+        --border: #eaeaf0;
+        --accent: #7559dc;
+        --soft: #f0ecfc;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          color-scheme: dark;
+          --bg: #14141c;
+          --card: #1c1c27;
+          --text: #ededf3;
+          --muted: #a0a1b4;
+          --border: #30303f;
+          --soft: #2e2548;
+        }
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        min-height: 100vh;
+        min-height: 100dvh;
+        display: grid;
+        grid-template-rows: auto 1fr auto;
+        background: var(--bg);
+        color: var(--text);
+        font:
+          15px/1.65 "Segoe UI",
+          system-ui,
+          sans-serif;
+        padding: max(24px, env(safe-area-inset-top))
+          max(24px, env(safe-area-inset-right))
+          max(24px, env(safe-area-inset-bottom))
+          max(24px, env(safe-area-inset-left));
+      }
+      .brand {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 18px;
+        font-weight: 700;
+        letter-spacing: -0.7px;
+      }
+      .brand svg {
+        width: 36px;
+        height: 36px;
+        border-radius: 11px;
+      }
+      .brand span span {
+        color: var(--accent);
+      }
+      main {
+        display: grid;
+        place-items: center;
+        padding: 40px 0;
+      }
+      .card {
+        width: min(100%, 500px);
+        text-align: center;
+        padding: 48px 34px 30px;
+        border: 1px solid var(--border);
+        border-radius: 26px;
+        background: var(--card);
+        box-shadow: 0 20px 70px #38226708;
+      }
+      .illustration {
+        position: relative;
+        width: 152px;
+        height: 132px;
+        margin: 0 auto 26px;
+        display: grid;
+        place-items: center;
+      }
+      .halo {
+        width: 124px;
+        height: 124px;
+        background: var(--soft);
+        border-radius: 50%;
+      }
+      .notebook {
+        position: absolute;
+        width: 74px;
+        height: 86px;
+        top: 19px;
+        left: 39px;
+        border-radius: 16px;
+        transform: rotate(-9deg);
+        box-shadow: 0 12px 22px #7559dc2b;
+      }
+      .wifi {
+        position: absolute;
+        display: grid;
+        place-items: center;
+        bottom: 0;
+        right: 5px;
+        width: 46px;
+        height: 46px;
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 15px;
+        box-shadow: 0 5px 14px #2423310a;
+        color: var(--muted);
+      }
+      .eyebrow {
+        color: var(--accent);
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 2px;
+      }
+      h1 {
+        font-size: clamp(26px, 7vw, 33px);
+        line-height: 1.2;
+        letter-spacing: -1.3px;
+        margin: 14px 0;
+      }
+      .description {
+        max-width: 345px;
+        margin: 0 auto 27px;
+        color: var(--muted);
+      }
+      button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 9px;
+        width: 100%;
+        min-height: 48px;
+        border: 0;
+        border-radius: 12px;
+        padding: 12px 18px;
+        background: var(--accent);
+        color: white;
+        font: inherit;
+        font-weight: 600;
+        cursor: pointer;
+      }
+      button:hover {
+        background: #6245c9;
+      }
+      button:focus-visible {
+        outline: 3px solid var(--accent);
+        outline-offset: 4px;
+      }
+      .status {
+        min-height: 23px;
+        margin: 15px 0 0;
+        color: var(--muted);
+        font-size: 12px;
+      }
+      .note {
+        display: flex;
+        align-items: start;
+        text-align: left;
+        gap: 10px;
+        margin-top: 24px;
+        border-top: 1px solid var(--border);
+        padding-top: 21px;
+        color: var(--muted);
+        font-size: 12px;
+      }
+      .note svg {
+        flex-shrink: 0;
+        margin-top: 2px;
+      }
+      footer {
+        color: var(--muted);
+        font-size: 11px;
+        text-align: center;
+        letter-spacing: 0.2px;
+      }
+      @media (max-width: 360px) {
+        body {
+          padding-left: 16px;
+          padding-right: 16px;
+        }
+        .card {
+          padding: 32px 22px 24px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="brand">
+      <svg aria-hidden="true" viewBox="0 0 64 64">
+        <rect width="64" height="64" fill="#7559dc" />
+        <g fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round">
+          <path
+            d="M24 16h20v33H24a5 5 0 0 1-5-5V21a5 5 0 0 1 5-5ZM27 16v33M33 26h5M33 33h5"
+          />
+        </g>
+      </svg>
+      <span>IntheraNotes<span>.</span></span>
+    </header>
+    <main>
+      <section class="card" aria-labelledby="title">
+        <div class="illustration" aria-hidden="true">
+          <div class="halo"></div>
+          <svg class="notebook" viewBox="0 0 74 86">
+            <rect width="74" height="86" rx="16" fill="#7559dc" />
+            <g
+              fill="none"
+              stroke="white"
+              stroke-width="3"
+              stroke-linecap="round"
+            >
+              <path
+                d="M25 22h27v42H25a6 6 0 0 1-6-6V28a6 6 0 0 1 6-6ZM30 22v42M37 35h8M37 44h8"
+              />
+            </g>
+          </svg>
+          <span class="wifi"
+            ><svg
+              width="25"
+              height="25"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.7"
+              stroke-linecap="round"
+            >
+              <path
+                d="m2 2 20 20M8.5 8.5a9 9 0 0 1 11.5 1M5 12a10 10 0 0 1 3-1.5M9 16a5 5 0 0 1 4-1M2 8a16 16 0 0 1 3-2M12 20h.01"
+              /></svg
+          ></span>
+        </div>
+        <span class="eyebrow">SEJENAK TANPA KONEKSI</span>
+        <h1 id="title">Kita sambung sebentar lagi.</h1>
+        <p class="description">
+          IntheraNotes belum bisa terhubung. Periksa koneksi internetmu, lalu
+          lanjutkan rencana harimu.
+        </p>
+        <button type="button" id="retry">
+          <svg
+            aria-hidden="true"
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.8"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M20 11a8 8 0 1 0-2 6M20 4v7h-7" /></svg
+          >Coba lagi
+        </button>
+        <p class="status" id="connection" role="status"></p>
+        <div class="note">
+          <svg
+            aria-hidden="true"
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.7"
+            stroke-linejoin="round"
+          >
+            <path d="m12 3 8 4v5c0 5-8 9-8 9s-8-4-8-9V7Z" />
+            <path d="m8 12 3 3 5-6" /></svg
+          ><span
+            >Data yang sudah tersimpan tetap ada di akunmu. Memuat dan menyimpan
+            tugas serta keuangan memerlukan internet.</span
+          >
+        </div>
+      </section>
+    </main>
+    <footer>Rencana kecil. Langkah berarti.</footer>
+    <script>
+      const status = document.getElementById("connection");
+      function connectionChanged() {
+        status.textContent = navigator.onLine
+          ? "Koneksi terdeteksi. Ketuk Coba lagi untuk melanjutkan."
+          : "Perangkatmu sedang offline.";
+      }
+      window.addEventListener("online", connectionChanged);
+      window.addEventListener("offline", connectionChanged);
+      connectionChanged();
+      document.getElementById("retry").addEventListener("click", function () {
+        if (location.pathname === "/offline.html")
+          location.assign("/dashboard");
+        else location.reload();
+      });
+    </script>
+  </body>
+</html>

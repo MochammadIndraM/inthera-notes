@@ -1,6 +1,7 @@
 import { Check, CircleCheck, ShieldCheck, Wallet } from "lucide-react";
 import Link from "next/link";
 import { Brand } from "./app-shell";
+import { InstallAppButton } from "./pwa-install";
 import type { ReactNode } from "react";
 
 export function AuthLayout({
@@ -69,7 +70,10 @@ export function AuthLayout({
           <p className="muted auth-description">{description}</p>
           {children}
         </div>
-        <p className="auth-footer">Rencanakan harimu. Pahami uangmu.</p>
+        <div className="auth-footer">
+          <p>Rencanakan harimu. Pahami uangmu.</p>
+          <InstallAppButton className="pwa-auth-install" compact />
+        </div>
       </main>
     </div>
   );

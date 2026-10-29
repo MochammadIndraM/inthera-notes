@@ -31,6 +31,13 @@ export function ActionButton({
         disabled={pending}
         onClick={() => {
           if (lock.current) return;
+          if (!navigator.onLine) {
+            const message =
+              "Kamu sedang offline. Sambungkan internet untuk menyimpan perubahan.";
+            setError(message);
+            toast.error(message);
+            return;
+          }
           lock.current = true;
           setError("");
           startTransition(async () => {

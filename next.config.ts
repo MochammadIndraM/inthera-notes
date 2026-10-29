@@ -1,7 +1,8 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  // UI tests use their own dev cache/lock so localhost:3000 can keep running.
+  distDir: process.env.INTHERA_UI_TEST === "1" ? ".next-e2e" : ".next",
   experimental: {
     agentFeedback: true,
   },

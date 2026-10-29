@@ -6,6 +6,7 @@ import { CategoryEditor } from "@/components/record-forms";
 import { ArchiveButton } from "@/components/record-actions";
 import { ReminderSettings } from "@/components/reminder-settings";
 import { reminderEmailConfig } from "@/lib/reminders/config";
+import { PwaSettings } from "@/components/pwa-install";
 export const metadata = { title: "Pengaturan" };
 export default async function Settings() {
   const [workspace, { user }] = await Promise.all([
@@ -84,6 +85,7 @@ export default async function Settings() {
           </Panel>
         </section>
       )}
+      <PwaSettings />
     </>
   );
 }

@@ -107,6 +107,14 @@ export function MutationForm({
         onSubmit={(event) => {
           event.preventDefault();
           if (lock.current) return;
+          if (!navigator.onLine) {
+            setResult({
+              ok: false,
+              message:
+                "Kamu sedang offline. Sambungkan internet, lalu simpan kembali. Isianmu tetap tersedia.",
+            });
+            return;
+          }
           const form = new FormData(event.currentTarget);
           lock.current = true;
           setBusy(true);
@@ -169,12 +177,14 @@ export function Modal({
   children,
   trigger,
   triggerClass = "btn primary",
+  triggerLabel,
   description,
 }: {
   title: string;
   children: ReactNode | ((close: () => void) => ReactNode);
   trigger?: ReactNode;
   triggerClass?: string;
+  triggerLabel?: string;
   description?: string;
 }) {
   const ref = useRef<HTMLDialogElement>(null);
@@ -215,6 +225,8 @@ export function Modal({
         className={triggerClass}
         type="button"
         aria-haspopup="dialog"
+        aria-label={triggerLabel}
+        title={triggerLabel}
         onClick={() => setOpen(true)}
       >
         {trigger ?? (
