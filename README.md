@@ -47,6 +47,12 @@ Buka `http://localhost:3000`. Tanpa konfigurasi Supabase, route login dan worksp
 
 6. Restart `npm run dev` setelah mengubah env. Daftarkan akun, verifikasi email bila diminta, lalu masuk. Profil dan 15 kategori privat dibuat oleh trigger secara otomatis; tidak ada transaksi, tugas, atau saldo demo. Pengguna lama di Supabase mendapat backfill profil/kategori saat migration dijalankan.
 
+### Jika pendaftaran gagal setelah beberapa percobaan
+
+IntheraNotes tidak menetapkan batas dua akun. Bedakan jumlah pengguna dengan batas pengiriman email Auth. Menurut [dokumentasi Supabase SMTP](https://supabase.com/docs/guides/auth/auth-smtp), pengirim bawaan saat ini dibatasi dua email per jam per project dan hanya boleh mengirim ke alamat anggota organisasi Supabase. Verifikasi signup, pemulihan password, dan pengiriman ulang email dapat memakai kuota pengiriman yang sama. Untuk registrasi pengguna umum, konfigurasikan custom SMTP pada Supabase Auth, lalu tinjau Authentication → Rate Limits sesuai kemampuan penyedia email. Menunggu dapat membantu saat kuota sementara habis, tetapi tidak mengatasi pembatasan penerima SMTP bawaan.
+
+Aplikasi menampilkan pesan khusus untuk limit email, terlalu banyak request, alamat yang tidak didukung pengirim email, signup/provider email nonaktif, serta kebijakan password. Untuk memastikan penyebab, buka log Auth di dashboard Supabase atau log server Vercel: event `intheranotes.auth.signup_failed` / `intheranotes.auth.reset_failed` berisi `code` dan HTTP `status`. Contoh kode: `over_email_send_rate_limit`, `email_address_not_authorized`, `over_request_rate_limit`, dan `signup_disabled`. Tidak ada email, password, token, atau pesan SQL mentah yang dicatat oleh diagnostik aplikasi. HTTP 500 atau error yang belum dikenali tetap memerlukan pemeriksaan log Auth/database. Perbaikan kode lokal perlu di-push dan dideploy sebelum pesan baru muncul di situs Vercel.
+
 ## Fitur yang diimplementasikan
 
 - Email/password: registrasi, login, logout, callback verifikasi, lupa/reset password, proteksi halaman dan mutasi.

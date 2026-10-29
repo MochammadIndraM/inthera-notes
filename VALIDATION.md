@@ -1,4 +1,4 @@
-# Hasil verifikasi implementasi
+﻿# Hasil verifikasi implementasi
 
 Tanggal: 29 Oktober 2026 (Asia/Jakarta).
 
@@ -8,7 +8,7 @@ Tanggal: 29 Oktober 2026 (Asia/Jakarta).
 | --------------------------------------- | ---------------------------------------------------------------- |
 | ESLint                                  | Lulus, tanpa warning/error                                       |
 | Next route type generation + TypeScript | Lulus                                                            |
-| Unit dan integrasi PostgreSQL           | 60 test lulus dalam 2 suite                                      |
+| Unit dan integrasi PostgreSQL           | 75 test lulus dalam 4 suite                                      |
 | Build produksi Next.js                  | Lulus                                                            |
 | Playwright/Edge lokal                   | 6 test lulus, 2 test backend live skipped                        |
 | Smoke server produksi                   | 7 pemeriksaan HTTP lulus; fixture development ditolak dengan 404 |
@@ -19,6 +19,8 @@ Pengujian browser mencakup halaman konfigurasi dan redirect, layout workspace fi
 Fixture UI hanya tersedia di development dengan flag test eksplisit. Tidak dipakai pada dashboard pengguna; `/dev-preview` mengembalikan 404 di produksi.
 
 ## Database dan keamanan
+
+Tambahan regresi Auth memverifikasi bahwa Server Action mempertahankan pesan limit email dan kegagalan SMTP, bahwa registrasi tanpa session tetap meminta verifikasi, dan bahwa pesan publik/log diagnostik tidak memuat email, password, token, pesan SQL mentah, atau konfirmasi keberadaan akun. Pengujian menggunakan mock SDK tanpa request signup atau email sungguhan.
 
 Migration asli dijalankan pada PostgreSQL WASM (PGlite), memakai role `authenticated` dan `anon`, serta identitas A/B yang berganti melalui simulasi `auth.uid()` test. Pemeriksaan memakai query SQL sebenarnya.
 
@@ -46,6 +48,6 @@ Transfer Rp100.000 tidak dihitung sebagai income/expense/anggaran; saldo awal ti
 
 ## Belum diverifikasi terhadap layanan eksternal
 
-Credentials Supabase dan akun test belum tersedia saat pengerjaan. Migration belum diterapkan ke project Supabase pemilik. Oleh karena itu, registrasi/verifikasi email, SMTP/password recovery, session refresh dan CRUD melalui hosted Supabase Auth/PostgREST **belum diklaim lulus end-to-end live**. Suite backend tersedia dan akan berjalan setelah env dikonfigurasi. Dua test backend tersebut saat ini skipped.
+Pada implementasi awal, credentials Supabase dan akun test belum tersedia sehingga dua test backend live dilewati. Pada investigasi registrasi berikutnya, pengaturan Auth publik berhasil dibaca: signup dan provider email aktif, serta verifikasi email diwajibkan. Pengujian registrasi/verifikasi email, SMTP/password recovery, session refresh, dan CRUD hosted **belum diklaim lulus end-to-end live**. Investigasi ini tidak membuat akun, mengirim email, atau mengubah pengaturan Auth. Penyebab kegagalan pendaftaran live tetap memerlukan kode dari log Auth.
 
 Pemeriksaan responsif/tema menggunakan fixture lokal, sedangkan persistensi, kalkulasi, serta RLS diuji di PostgreSQL sebenarnya yang berjalan lokal. Browser yang diperiksa adalah Edge; Safari/Firefox dan perangkat fisik belum diperiksa. Gunakan README untuk konfigurasi dan perintah pengujian ulang.

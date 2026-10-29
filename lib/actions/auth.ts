@@ -10,6 +10,7 @@ import {
 import { safeNext } from "@/lib/domain";
 import type { ActionResult } from "@/lib/types";
 import { revalidatePath } from "next/cache";
+import { authFailure, authFailureMetadata } from "@/lib/auth-errors";
 
 export async function authenticate(
   mode: "login" | "register" | "reset" | "password",
@@ -51,16 +52,18 @@ export async function authenticate(
       String(raw.email),
       { redirectTo: origin + "/auth/callback?next=/reset-password" },
     );
-    return error
-      ? {
-          ok: false,
-          message: "Permintaan belum dapat diproses. Coba kembali nanti.",
-        }
-      : {
-          ok: true,
-          message:
-            "Jika email terdaftar, tautan pemulihan akan dikirim. Periksa kotak masuk.",
-        };
+    if (error) {
+      console.warn(
+        "intheranotes.auth.reset_failed",
+        authFailureMetadata(error),
+      );
+      return authFailure(error, "reset");
+    }
+    return {
+      ok: true,
+      message:
+        "Jika email terdaftar, tautan pemulihan akan dikirim. Periksa kotak masuk.",
+    };
   }
   if (mode === "password") {
     const {
@@ -103,12 +106,13 @@ export async function authenticate(
           : {}),
       },
     });
-    if (error)
-      return {
-        ok: false,
-        message:
-          "Pendaftaran belum dapat diproses. Periksa isian atau coba kembali nanti.",
-      };
+    if (error) {
+      console.warn(
+        "intheranotes.auth.signup_failed",
+        authFailureMetadata(error),
+      );
+      return authFailure(error, "register");
+    }
     return data.session
       ? {
           ok: true,
