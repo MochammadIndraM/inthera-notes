@@ -2,6 +2,7 @@
 import Link from "next/link";
 import { authenticate } from "@/lib/actions/auth";
 import { MutationForm, Field } from "./ui";
+import { PasswordInput } from "./password-input";
 
 export function AuthForm({
   mode,
@@ -48,9 +49,8 @@ export function AuthForm({
       )}
       {mode !== "reset" && (
         <Field label="Password" name="password">
-          <input
+          <PasswordInput
             name="password"
-            type="password"
             autoComplete={
               mode === "login" ? "current-password" : "new-password"
             }
@@ -63,9 +63,9 @@ export function AuthForm({
       )}
       {(mode === "register" || mode === "password") && (
         <Field label="Konfirmasi password" name="confirm_password">
-          <input
+          <PasswordInput
             name="confirm_password"
-            type="password"
+            visibilityLabel="konfirmasi password"
             autoComplete="new-password"
             required
             minLength={8}
