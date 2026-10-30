@@ -185,7 +185,7 @@ test.describe("MVP dengan backend Supabase asli", () => {
         .getByRole("button", { name: "Hapus " + labels[0], exact: true })
         .click();
       await page
-        .getByRole("dialog", { name: "Hapus data?" })
+        .getByRole("alertdialog", { name: "Hapus data?" })
         .getByRole("button", { name: "Ya, hapus data" })
         .click();
       await expect(row).toHaveCount(0);

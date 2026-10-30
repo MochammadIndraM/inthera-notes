@@ -18,6 +18,8 @@ import { useRouter } from "next/navigation";
 import { Check, CircleAlert, Inbox, LoaderCircle, Plus, X } from "lucide-react";
 import { toast } from "sonner";
 import type { ActionResult } from "@/lib/types";
+import { formatMoneyInput, isMoneyPaste } from "@/lib/money-input";
+import { useConfirm } from "./confirm-provider";
 
 const ErrorContext = createContext<Record<string, string[]>>({});
 type ControlProps = Pick<
@@ -82,19 +84,6 @@ export function MutationForm({
   const [busy, setBusy] = useState(false);
   const lock = useRef(false);
   const formRef = useRef<HTMLFormElement>(null);
-  useEffect(() => {
-    const beforeUnload = (event: BeforeUnloadEvent) => {
-      if (
-        formRef.current?.dataset.dirty === "true" ||
-        formRef.current?.dataset.pending === "true"
-      ) {
-        event.preventDefault();
-        event.returnValue = "";
-      }
-    };
-    window.addEventListener("beforeunload", beforeUnload);
-    return () => window.removeEventListener("beforeunload", beforeUnload);
-  }, []);
   return (
     <ErrorContext.Provider value={result?.errors ?? {}}>
       <form
@@ -192,14 +181,36 @@ export function Modal({
   const ref = useRef<HTMLDialogElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
   const [open, setOpen] = useState(false);
+  const closeRequested = useRef(false);
+  const confirm = useConfirm();
   const id = useId();
   const close = () => setOpen(false);
-  function mayClose(dialog: HTMLDialogElement | null) {
-    if (dialog?.querySelector('form[data-pending="true"]')) return false;
-    return (
-      !dialog?.querySelector('form[data-dirty="true"]') ||
-      window.confirm("Isian belum disimpan. Tutup dan abaikan perubahan?")
-    );
+  async function requestClose() {
+    const dialog = ref.current;
+    if (
+      closeRequested.current ||
+      dialog?.querySelector('[data-pending="true"]')
+    )
+      return;
+    closeRequested.current = true;
+    try {
+      if (
+        dialog?.querySelector('form[data-dirty="true"]') &&
+        !(await confirm({
+          title: "Buang perubahan?",
+          description:
+            "Isianmu belum disimpan. Jika ditutup, perubahan ini akan hilang.",
+          confirmLabel: "Buang perubahan",
+          cancelLabel: "Lanjut mengedit",
+          variant: "destructive",
+          container: dialog,
+        }))
+      )
+        return;
+      if (!dialog?.querySelector('[data-pending="true"]')) close();
+    } finally {
+      closeRequested.current = false;
+    }
   }
   useEffect(() => {
     if (open) {
@@ -245,20 +256,19 @@ export function Modal({
         aria-describedby={description ? id + "-desc" : undefined}
         onCancel={(event) => {
           event.preventDefault();
-          if (mayClose(event.currentTarget)) close();
+          void requestClose();
         }}
         onClose={() => setOpen(false)}
         onClick={(e) => {
           if (e.target === e.currentTarget) {
             const bounds = e.currentTarget.getBoundingClientRect();
             if (
-              (e.clientX < bounds.left ||
-                e.clientX > bounds.right ||
-                e.clientY < bounds.top ||
-                e.clientY > bounds.bottom) &&
-              mayClose(e.currentTarget)
+              e.clientX < bounds.left ||
+              e.clientX > bounds.right ||
+              e.clientY < bounds.top ||
+              e.clientY > bounds.bottom
             )
-              close();
+              void requestClose();
           }
         }}
       >
@@ -271,9 +281,7 @@ export function Modal({
             className="icon-btn"
             type="button"
             aria-label="Tutup dialog"
-            onClick={(event) => {
-              if (mayClose(event.currentTarget.closest("dialog"))) close();
-            }}
+            onClick={() => void requestClose()}
           >
             <X size={20} />
           </button>
@@ -324,28 +332,72 @@ export function MoneyInput({
   allowNegative?: boolean;
   required?: boolean;
 }) {
+  const initial = value ? BigInt(value).toLocaleString("id-ID") : "";
+  const previous = useRef(initial);
   return (
     <div className="money-input">
       <span>Rp</span>
       <input
         {...control}
         name={name}
-        defaultValue={value ? BigInt(value).toLocaleString("id-ID") : ""}
+        type="text"
+        defaultValue={initial}
         inputMode={allowNegative ? "text" : "numeric"}
+        pattern={
+          allowNegative ? "-?[0-9]+(\\.[0-9]{3})*" : "[0-9]+(\\.[0-9]{3})*"
+        }
+        autoComplete="off"
+        autoCorrect="off"
+        spellCheck={false}
         required={required}
         placeholder="0"
         maxLength={32}
-        onBlur={(e) => {
-          const raw = e.target.value.trim().replace(/^Rp\s*/i, "");
-          if (
-            (allowNegative
-              ? /^-?(\d+|\d{1,3}(\.\d{3})+)$/
-              : /^(\d+|\d{1,3}(\.\d{3})+)$/
-            ).test(raw)
-          )
-            e.target.value = BigInt(raw.replaceAll(".", "")).toLocaleString(
-              "id-ID",
+        onChange={(event) => {
+          const input = event.currentTarget;
+          const raw = input.value;
+          const position = input.selectionStart ?? raw.length;
+          const formatted = formatMoneyInput(raw, allowNegative, position);
+          if (!formatted) {
+            input.value = previous.current;
+            const caret = Math.max(
+              0,
+              Math.min(
+                input.value.length,
+                position - Math.max(0, raw.length - input.value.length),
+              ),
             );
+            input.setSelectionRange(caret, caret);
+            event.stopPropagation();
+            return;
+          }
+          if (formatted.value === previous.current) event.stopPropagation();
+          input.value = formatted.value;
+          previous.current = formatted.value;
+          input.setSelectionRange(formatted.caret, formatted.caret);
+        }}
+        onPaste={(event) => {
+          if (!isMoneyPaste(event.clipboardData.getData("text"), allowNegative))
+            event.preventDefault();
+        }}
+        onKeyDown={(event) => {
+          if (event.ctrlKey || event.metaKey || event.altKey) return;
+          if (event.key === "." || event.key === ",") {
+            event.preventDefault();
+            return;
+          }
+          const input = event.currentTarget;
+          const start = input.selectionStart;
+          if (start === null || start !== input.selectionEnd) return;
+          // Delete a digit in one press, rather than repeatedly re-inserting a separator.
+          if (event.key === "Backspace" && input.value[start - 1] === ".")
+            input.setSelectionRange(start - 1, start - 1);
+          if (event.key === "Delete" && input.value[start] === ".")
+            input.setSelectionRange(start + 1, start + 1);
+        }}
+        onBlur={(e) => {
+          if (e.currentTarget.value === "-") e.currentTarget.value = "";
+          if (e.currentTarget.value === "-0") e.currentTarget.value = "0";
+          previous.current = e.currentTarget.value;
         }}
       />
     </div>

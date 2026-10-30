@@ -11,6 +11,7 @@ import {
 } from "react";
 import { Download, LoaderCircle, RefreshCw, WifiOff, X } from "lucide-react";
 import { usePathname } from "next/navigation";
+import { useConfirm } from "./confirm-provider";
 
 interface InstallPrompt extends Event {
   prompt(): Promise<void>;
@@ -58,6 +59,8 @@ function getPlatform(): Platform {
 }
 
 export function PwaProvider({ children }: { children: ReactNode }) {
+  const confirm = useConfirm();
+  const updateRequested = useRef(false);
   const online = useSyncExternalStore(
     subscribeOnline,
     () => navigator.onLine,
@@ -212,19 +215,29 @@ export function PwaProvider({ children }: { children: ReactNode }) {
       setInstalling(false);
     }
   }
-  function update() {
-    if (!waiting || updating) return;
-    if (document.querySelector('form[data-pending="true"]')) {
+  async function update() {
+    if (!waiting || updating || updateRequested.current) return;
+    if (document.querySelector('[data-pending="true"]')) {
       setUpdateMessage("Tunggu sampai proses penyimpanan selesai.");
       return;
     }
-    if (
-      document.querySelector('form[data-dirty="true"]') &&
-      !window.confirm(
-        "Ada isian yang belum disimpan. Muat ulang dan abaikan isian tersebut?",
-      )
-    )
+    updateRequested.current = true;
+    const approved =
+      !document.querySelector('form[data-dirty="true"]') ||
+      (await confirm({
+        title: "Perbarui aplikasi?",
+        description:
+          "Ada isian yang belum disimpan. Memperbarui aplikasi akan memuat ulang halaman dan membuang isian tersebut.",
+        confirmLabel: "Perbarui dan muat ulang",
+        cancelLabel: "Lanjut mengedit",
+        variant: "destructive",
+      }));
+    updateRequested.current = false;
+    if (!approved) return;
+    if (document.querySelector('[data-pending="true"]')) {
+      setUpdateMessage("Tunggu sampai proses penyimpanan selesai.");
       return;
+    }
     reloadForUpdate.current = true;
     setUpdating(true);
     try {

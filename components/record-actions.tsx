@@ -5,31 +5,40 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { changeRecord, type Entity } from "@/lib/actions/records";
 import type { ActionResult } from "@/lib/types";
+import { useConfirm, type ConfirmationOptions } from "./confirm-provider";
 
 export function ActionButton({
   action,
   children,
   className = "btn secondary",
   label,
+  confirmation,
 }: {
   action: () => Promise<ActionResult>;
   children: ReactNode;
   className?: string;
   label?: string;
+  confirmation?: ConfirmationOptions;
 }) {
   const [pending, startTransition] = useTransition();
   const lock = useRef(false);
   const router = useRouter();
   const [error, setError] = useState("");
+  const confirm = useConfirm();
   return (
-    <span className="action-control">
+    <span
+      className="action-control"
+      data-pending={pending ? "true" : undefined}
+    >
       <button
         type="button"
         aria-label={label}
+        aria-haspopup={confirmation ? "dialog" : undefined}
+        aria-busy={pending}
         title={label}
         className={className}
         disabled={pending}
-        onClick={() => {
+        onClick={async () => {
           if (lock.current) return;
           if (!navigator.onLine) {
             const message =
@@ -39,6 +48,18 @@ export function ActionButton({
             return;
           }
           lock.current = true;
+          if (confirmation && !(await confirm(confirmation))) {
+            lock.current = false;
+            return;
+          }
+          if (!navigator.onLine) {
+            lock.current = false;
+            const message =
+              "Kamu sedang offline. Sambungkan internet untuk menyimpan perubahan.";
+            setError(message);
+            toast.error(message);
+            return;
+          }
           setError("");
           startTransition(async () => {
             try {

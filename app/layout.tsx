@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Toaster } from "sonner";
 import { PwaProvider } from "@/components/pwa-provider";
+import { ConfirmProvider } from "@/components/confirm-provider";
 import "./globals.css";
 
 export const dynamic = "force-dynamic";
@@ -49,10 +50,12 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         />
       </head>
       <body>
-        <PwaProvider>
-          {children}
-          <Toaster richColors position="bottom-right" closeButton />
-        </PwaProvider>
+        <ConfirmProvider>
+          <PwaProvider>
+            {children}
+            <Toaster richColors position="bottom-right" closeButton />
+          </PwaProvider>
+        </ConfirmProvider>
       </body>
     </html>
   );

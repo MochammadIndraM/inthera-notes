@@ -8,14 +8,18 @@ Tanggal: 30 Oktober 2026 (Asia/Jakarta); termasuk hasil PWA dari 29 Oktober 2026
 | --------------------------------------- | ---------------------------------------------------------------- |
 | ESLint                                  | Lulus, tanpa warning/error                                       |
 | Next route type generation + TypeScript | Lulus                                                            |
-| Unit dan integrasi PostgreSQL           | 137 test lulus dalam 12 suite                                    |
+| Unit dan integrasi PostgreSQL           | 167 test lulus dalam 13 suite                                    |
 | Build produksi Next.js                  | Lulus                                                            |
-| Playwright/Edge lokal                   | 14 test lulus, 2 test skipped sesuai konfigurasi                 |
+| Playwright/Edge lokal                   | 21 test lulus, 2 test skipped sesuai konfigurasi                 |
 | PWA pada build produksi                 | 6 test browser lulus                                             |
 | Smoke server produksi                   | 8 pemeriksaan HTTP lulus; fixture development ditolak dengan 404 |
 | Prettier                                | Lulus                                                            |
 
 Pengujian browser mencakup halaman konfigurasi dan redirect, layout workspace fixture pada lebar 320/390/768/1440, modal tugas/transaksi, label dan fokus awal/kembali, keyboard Escape, konfirmasi isian belum tersimpan, kontrol transfer, sidebar collapse, drawer mobile, tema gelap, tanpa horizontal overflow dan tanpa error JavaScript.
+
+Tambahan konfirmasi shadcn/ui: Alert Dialog berbasis Radix menggantikan seluruh `window.confirm` untuk membuang isian dan pembaruan PWA, serta dipakai pada semua konfirmasi hapus data. Enam test browser memeriksa lapisan dialog di atas form native pada 320/390/1440px, fokus awal/tahanan fokus/kembali ke pemicu, Escape dan batal yang mempertahankan isian, pembatalan hapus tanpa POST, penolakan penutupan saat menyimpan, dan kegagalan request hapus yang mempertahankan baris serta mengaktifkan kembali tombol. Request hapus pada test kegagalan dicegat dan dibatalkan sebelum mencapai server. Peringatan saat menutup/reload tab tetap memakai mekanisme browser `beforeunload`; tampilannya tidak dapat diubah menjadi komponen aplikasi.
+
+Tambahan input nominal 30 Oktober: 30 test formatter memeriksa titik ribuan langsung, penolakan huruf/pecahan/eksponen, nilai tempelan rupiah, posisi kursor, leading zero, koreksi saldo awal lama, dan presisi di atas Number.MAX_SAFE_INTEGER. Test browser nominal memeriksa pengetikan, Backspace/Delete pada pemisah ribuan, penggantian seleksi di tengah angka, validitas input/form data, dan Select All. Test UI responsif terkait dijalankan ulang; validasi server dan batas saldo tetap diuji melalui suite domain/database/actions.
 
 Tambahan PWA: manifest dan dimensi PNG/Apple/maskable, header worker, service worker produksi sebenarnya, navigasi offline dan retry, cache yang hanya berisi lima aset publik, serta form offline yang mempertahankan isian tanpa mengirim POST. Prompt browser disimulasikan untuk menguji pembatalan; user agent iPhone dipakai untuk memeriksa panduan Safari pada 320px. Worker waiting terkontrol menguji penundaan pembaruan selama penyimpanan dan konfirmasi isian belum disimpan. Banner dapat ditunda dan mode standalone menyembunyikan ajakan pemasangan. Sepuluh test unit worker memeriksa cache publik, penghapusan cache versi lama, respons privat dari jaringan, pengecualian POST/API/RSC/Supabase, fallback, dan aktivasi eksplisit. Detail: [PWA.md](PWA.md).
 

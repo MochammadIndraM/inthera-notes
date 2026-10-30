@@ -100,8 +100,11 @@ for (const width of [320, 390, 768, 1440]) {
         (element) => element.scrollWidth <= element.clientWidth,
       ),
     ).toBe(true);
-    page.once("dialog", (prompt) => prompt.accept());
     await page.keyboard.press("Escape");
+    await page
+      .getByRole("alertdialog", { name: "Buang perubahan?" })
+      .getByRole("button", { name: "Buang perubahan", exact: true })
+      .click();
     await expect(dialog).not.toBeVisible();
     await expect(
       page.getByRole("button", { name: "Tambah tugas", exact: true }),

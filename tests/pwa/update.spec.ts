@@ -47,13 +47,18 @@ test("UI pembaruan menunggu penyimpanan dan persetujuan isian belum tersimpan", 
     delete form.dataset.pending;
   });
   await page.getByLabel("Alamat email").fill("unsaved@example.test");
-  page.once("dialog", (dialog) => dialog.dismiss());
   await update.click();
+  const confirmation = page.getByRole("alertdialog", {
+    name: "Perbarui aplikasi?",
+  });
+  await confirmation.getByRole("button", { name: "Lanjut mengedit" }).click();
   await expect(page.locator("html")).not.toHaveAttribute(
     "data-worker-update-requested",
   );
-  page.once("dialog", (dialog) => dialog.accept());
   await update.click();
+  await confirmation
+    .getByRole("button", { name: "Perbarui dan muat ulang" })
+    .click();
   await expect(page.locator("html")).toHaveAttribute(
     "data-worker-update-requested",
     "true",

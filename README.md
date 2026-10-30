@@ -64,6 +64,7 @@ Aplikasi menampilkan pesan khusus untuk limit email, terlalu banyak request, ala
 - Proyek: tambah/edit/arsip/aktifkan/hapus. Hapus proyek melepas relasi tugas dalam satu operasi database tanpa menghapus tugas.
 - Akun: tunai, bank, e-wallet, lainnya; saldo awal akun baru minimal 0, tanggal pembukaan, edit, arsip/aktifkan, dan peringatan untuk saldo negatif lama yang belum dikoreksi.
 - Pemasukan, pengeluaran, transfer internal: tambah/edit/hapus, tanggal, kategori, akun, judul/catatan; transfer atomik sebagai satu row, dua akun berbeda.
+- Input rupiah menerima angka dan otomatis memberi titik ribuan saat mengetik, termasuk nominal transaksi, saldo awal baru, dan anggaran. Nilai tempelan pecahan/notasi eksponen ditolak; angka besar tetap presisi. Koreksi saldo awal akun lama tetap mendukung tanda negatif sesuai aturan saldo akhir.
 - Saldo cukup: pengeluaran/transfer ditolak jika akun terkait akan minus. Edit/hapus pemasukan atau transfer serta perubahan saldo awal juga diperiksa. Pemeriksaan server memakai rupiah presisi BIGINT; trigger database mengunci akun agar penulisan bersamaan tidak melewati batas saldo.
 - Riwayat transaksi: pencarian judul/catatan, filter jenis/kategori/akun/bulan/rentang tanggal, urut nominal/tanggal, pagination 25 item.
 - Kategori bawaan/kustom: tambah/edit/arsip/aktifkan melalui Pengaturan. Nama unik per pemilik dan jenis, case insensitive. Perubahan jenis kategori yang sudah direferensikan ditolak database.
@@ -72,6 +73,9 @@ Aplikasi menampilkan pesan khusus untuk limit email, terlalu banyak request, ala
 - Laporan: bulan atau rentang tanggal hingga 367 hari; total income/expense/net, tren, ranking kategori, CSV UTF-8 dengan BOM dan mitigasi formula injection. Export mengikuti filter transaksi, tanpa batas pagination layar atau cap 1.000 row PostgREST, memakai satu snapshot statement database.
 - Pengaturan: profil dan preferensi terang/gelap/sistem tersimpan di database. IDR dan WIB tetap untuk MVP; localStorage hanya menyimpan salinan preferensi tema agar tidak berkedip saat memuat.
 - UI responsif, sidebar collapse/drawer, bottom navigation mobile, modal native dengan focus management, label input dan error inline, loading, empty/error/retry state, toast, disabled submit, dan konfirmasi hapus.
+- Seluruh konfirmasi di dalam aplikasi memakai komposisi Alert Dialog shadcn/ui berbasis Radix: buang isian, hapus data, dan pembaruan PWA. Tombol batal mendapat fokus awal, Escape membatalkan, fokus kembali ke pemicu, dan isian tetap tersedia jika pengguna batal. Dialog di atas form native memakai portal di dalam dialog aktif agar tidak tertutup top layer browser. Penutupan selama penyimpanan ditolak dan aksi hapus hanya dikirim setelah disetujui.
+
+Peringatan ketika menutup tab atau reload halaman memakai `beforeunload` untuk melindungi isian/proses yang belum selesai. Tampilan peringatan ini ditentukan browser dan tidak dapat diganti dengan komponen aplikasi. [Batas beforeunload](https://developer.mozilla.org/en-US/docs/Web/API/Window/beforeunload_event). Prompt instalasi PWA juga tetap mengikuti browser. Sumber komponen: [shadcn/ui Alert Dialog](https://ui.shadcn.com/docs/components/radix/alert-dialog), [Radix Alert Dialog](https://www.radix-ui.com/primitives/docs/components/alert-dialog).
 
 ## Keputusan arsitektur
 

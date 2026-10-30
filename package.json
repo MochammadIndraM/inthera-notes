@@ -17,6 +17,7 @@
     "test:production": "node tests/production-smoke.mjs"
   },
   "dependencies": {
+    "@radix-ui/react-alert-dialog": "^1.2.1",
     "@supabase/ssr": "^0.12.7",
     "@supabase/supabase-js": "^2.118.0",
     "lucide-react": "^1.64.0",

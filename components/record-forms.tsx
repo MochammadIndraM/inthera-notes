@@ -19,6 +19,7 @@ import type {
   Workspace,
 } from "@/lib/types";
 import { Field, Modal, MoneyInput, MutationForm } from "./ui";
+import { ActionButton } from "./record-actions";
 
 type Trigger = { trigger?: ReactNode; triggerClass?: string };
 function Editor({
@@ -345,7 +346,7 @@ export function AccountEditor({
         <MoneyInput
           name="opening_balance"
           value={account?.opening_balance ?? "0"}
-          allowNegative
+          allowNegative={!!account}
         />
       </Field>
       <Field label="Tanggal pembukaan (opsional)" name="opened_on">
@@ -506,32 +507,23 @@ export function DeleteRecord({
   label: string;
 }) {
   return (
-    <Modal
-      title="Hapus data?"
-      trigger={
-        <>
-          <Trash2 size={15} />
-          <span className="sr-only">Hapus {label}</span>
-        </>
-      }
-      triggerClass="icon-btn danger-text"
-      description={
-        entity === "transaction"
-          ? `Hapus “${label}” secara permanen? Saldo, ringkasan, dan realisasi anggaran akan dihitung ulang.`
-          : entity === "project"
-            ? `Hapus “${label}”? Tugas tetap disimpan dan dilepaskan dari proyek ini.`
-            : `Hapus “${label}” secara permanen? Tindakan ini tidak dapat dibatalkan.`
-      }
+    <ActionButton
+      action={() => changeRecord(entity, id, "delete")}
+      label={`Hapus ${label}`}
+      className="icon-btn danger-text"
+      confirmation={{
+        title: "Hapus data?",
+        confirmLabel: "Ya, hapus data",
+        variant: "destructive",
+        description:
+          entity === "transaction"
+            ? `Hapus “${label}” secara permanen? Saldo, ringkasan, dan realisasi anggaran akan dihitung ulang.`
+            : entity === "project"
+              ? `Hapus “${label}”? Tugas tetap disimpan dan dilepaskan dari proyek ini.`
+              : `Hapus “${label}” secara permanen? Tindakan ini tidak dapat dibatalkan.`,
+      }}
     >
-      {(close) => (
-        <MutationForm
-          action={() => changeRecord(entity, id, "delete")}
-          onSuccess={close}
-          submit="Ya, hapus data"
-        >
-          <span />
-        </MutationForm>
-      )}
-    </Modal>
+      <Trash2 size={15} aria-hidden="true" />
+    </ActionButton>
   );
 }
