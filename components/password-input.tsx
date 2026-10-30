@@ -67,9 +67,9 @@ export function PasswordInput({
         onClick={() => setVisible((current) => !current)}
       >
         {visible ? (
-          <EyeOff size={18} aria-hidden="true" />
-        ) : (
           <Eye size={18} aria-hidden="true" />
+        ) : (
+          <EyeOff size={18} aria-hidden="true" />
         )}
       </button>
     </span>

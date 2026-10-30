@@ -33,7 +33,7 @@ function amount(signed = false) {
         }
       },
       signed
-        ? "Gunakan rupiah bulat dalam batas BIGINT; saldo negatif diperbolehkan."
+        ? "Gunakan rupiah bulat dalam batas BIGINT. Saldo awal akun baru minimal 0."
         : "Nominal wajib positif, bulat, dan dalam batas BIGINT. Contoh: 25.000.",
     )
     .transform((v) => parseRupiah(v, signed).toString());

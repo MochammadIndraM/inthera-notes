@@ -178,6 +178,7 @@ export function Modal({
   trigger,
   triggerClass = "btn primary",
   triggerLabel,
+  dialogClassName = "",
   description,
 }: {
   title: string;
@@ -185,6 +186,7 @@ export function Modal({
   trigger?: ReactNode;
   triggerClass?: string;
   triggerLabel?: string;
+  dialogClassName?: string;
   description?: string;
 }) {
   const ref = useRef<HTMLDialogElement>(null);
@@ -238,7 +240,7 @@ export function Modal({
       </button>
       <dialog
         ref={ref}
-        className="modal"
+        className={["modal", dialogClassName].filter(Boolean).join(" ")}
         aria-labelledby={id}
         aria-describedby={description ? id + "-desc" : undefined}
         onCancel={(event) => {

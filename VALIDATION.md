@@ -1,6 +1,6 @@
 ﻿# Hasil verifikasi implementasi
 
-Tanggal: 29 Oktober 2026 (Asia/Jakarta).
+Tanggal: 30 Oktober 2026 (Asia/Jakarta); termasuk hasil PWA dari 29 Oktober 2026.
 
 ## Pemeriksaan otomatis
 
@@ -8,7 +8,7 @@ Tanggal: 29 Oktober 2026 (Asia/Jakarta).
 | --------------------------------------- | ---------------------------------------------------------------- |
 | ESLint                                  | Lulus, tanpa warning/error                                       |
 | Next route type generation + TypeScript | Lulus                                                            |
-| Unit dan integrasi PostgreSQL           | 108 test lulus dalam 9 suite                                     |
+| Unit dan integrasi PostgreSQL           | 137 test lulus dalam 12 suite                                    |
 | Build produksi Next.js                  | Lulus                                                            |
 | Playwright/Edge lokal                   | 14 test lulus, 2 test skipped sesuai konfigurasi                 |
 | PWA pada build produksi                 | 6 test browser lulus                                             |
@@ -24,6 +24,10 @@ Suite development memakai cache/lock `.next-e2e` yang terpisah dari server kerja
 Fixture UI hanya tersedia di development dengan flag test eksplisit. Tidak dipakai pada dashboard pengguna; `/dev-preview` mengembalikan 404 di produksi.
 
 ## Database dan keamanan
+
+Tambahan aturan saldo 30 Oktober: 15 test PostgreSQL menjalankan rantai migration awal, pengingat, dan `202610300001_sufficient_balance.sql`. Diperiksa expense 200k dari saldo 100k, pemakaian tepat sampai nol, transfer atomik, perubahan nominal/akun/jenis transaksi, penghapusan pemasukan/transfer yang dananya telah digunakan, koreksi saldo awal, penulisan multirow yang rollback penuh, presisi BIGINT, perbaikan saldo negatif lama, serta isolasi pengguna. Enam test fungsi saldo dan delapan test Server Actions menguji dampak bersih edit/delete, pembacaan uang sebagai string, penolakan sebelum write, kegagalan guard DB setelah preflight, pesan aman, dan sesi tidak sah.
+
+Trigger mengunci semua akun yang terpengaruh dan membuat versi baris akun untuk serialisasi writer; saldo tetap dihitung dari ledger. Pengujian lokal PGlite tidak membuktikan kontensi dua sesi PostgreSQL independen. Migration hosted dan uji kontensi hosted belum dijalankan. Terapkan migration baru sekali sesuai README untuk mengaktifkan perlindungan database pada deployment.
 
 Tambahan pengingat tugas: migration `202610290002_task_reminders.sql` diuji dengan role authenticated/anon/service_role pada PostgreSQL WASM. Lulus untuk due/overdue WIB, pengecualian task selesai/tanpa tanggal/masa depan, consent dan penerima terverifikasi, isolasi tenant, pembatalan setelah opt-out/selesai, unique user/tanggal, retry snapshot, fencing token, batas percobaan, dan kedaluwarsa. Worker dan endpoint cron diuji tanpa mengirim email nyata; header tidak sah ditolak sebelum mengakses admin DB. UI lonceng/dialog/preferensi diuji pada 320/390/1440px tanpa horizontal overflow. Flag fixture development sementara dikembalikan sesudah pemeriksaan. Konfigurasi pengirim, migration hosted, dan pengiriman email/cron live masih memerlukan setup pemilik menurut REMINDERS.md.
 

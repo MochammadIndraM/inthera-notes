@@ -55,11 +55,19 @@ for (const route of ["login", "register"]) {
         await expectEyeInside(input);
         await input.fill("Contoh-pengujian-123!");
         const button = input.locator("..").getByRole("button");
+        await expect(button).toHaveAttribute("aria-label", /^Tampilkan /);
+        await expect(button).toHaveAttribute("aria-pressed", "false");
+        await expect(button.locator("svg.lucide-eye-off")).toHaveCount(1);
         await button.click();
         await expect(input).toHaveAttribute("type", "text");
         await expect(input).toHaveValue("Contoh-pengujian-123!");
+        await expect(button).toHaveAttribute("aria-label", /^Sembunyikan /);
+        await expect(button).toHaveAttribute("aria-pressed", "true");
+        await expect(button.locator("svg.lucide-eye")).toHaveCount(1);
+        await expect(button.locator("svg.lucide-eye-off")).toHaveCount(0);
         await button.press("Space");
         await expect(input).toHaveAttribute("type", "password");
+        await expect(button.locator("svg.lucide-eye-off")).toHaveCount(1);
       }
       await page.evaluate(() => {
         for (const sheet of Array.from(document.styleSheets))

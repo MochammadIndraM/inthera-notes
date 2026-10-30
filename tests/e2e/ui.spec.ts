@@ -65,6 +65,36 @@ for (const width of [320, 390, 768, 1440]) {
       .fill("Tugas pengujian");
     await dialog.getByText("Detail & pengaturan tugas").click();
     await expect(dialog.getByLabel("Prioritas")).toBeVisible();
+    const description = dialog.getByLabel("Deskripsi", { exact: true });
+    const multiline = Array.from(
+      { length: 12 },
+      (_, index) => `${index + 1}. Langkah dan catatan untuk tugas ini.`,
+    ).join("\n");
+    await description.fill(multiline);
+    const textArea = await description.evaluate((element) => {
+      const styles = getComputedStyle(element);
+      return {
+        fontSize: parseFloat(styles.fontSize),
+        visibleLines:
+          (element.clientHeight -
+            parseFloat(styles.paddingTop) -
+            parseFloat(styles.paddingBottom)) /
+          parseFloat(styles.lineHeight),
+      };
+    });
+    expect(textArea.fontSize).toBeGreaterThanOrEqual(16);
+    expect(textArea.visibleLines).toBeGreaterThanOrEqual(7);
+    await dialog.getByLabel("Apa yang ingin diselesaikan?").focus();
+    await expect(description).toHaveValue(multiline);
+    if (width === 390 || width === 1440) {
+      await description.evaluate((element) => {
+        element.scrollTop = 0;
+      });
+      await dialog.screenshot({
+        path: `test-results/task-description-${width}.png`,
+        caret: "initial",
+      });
+    }
     expect(
       await dialog.evaluate(
         (element) => element.scrollWidth <= element.clientWidth,

@@ -62,8 +62,9 @@ Aplikasi menampilkan pesan khusus untuk limit email, terlalu banyak request, ala
 - Tugas: tambah/edit/hapus, deskripsi, tanggal kalender, prioritas, status, selesai/buka kembali, proyek, search, filter status/prioritas/proyek/tanggal, sorting, dan pagination server.
 - Hari Ini memisahkan overdue di bagian **Perlu perhatian**; Mendatang hanya memuat tugas aktif setelah hari ini.
 - Proyek: tambah/edit/arsip/aktifkan/hapus. Hapus proyek melepas relasi tugas dalam satu operasi database tanpa menghapus tugas.
-- Akun: tunai, bank, e-wallet, lainnya; saldo awal signed integer, tanggal pembukaan, edit, arsip/aktifkan, dan peringatan saldo negatif.
+- Akun: tunai, bank, e-wallet, lainnya; saldo awal akun baru minimal 0, tanggal pembukaan, edit, arsip/aktifkan, dan peringatan untuk saldo negatif lama yang belum dikoreksi.
 - Pemasukan, pengeluaran, transfer internal: tambah/edit/hapus, tanggal, kategori, akun, judul/catatan; transfer atomik sebagai satu row, dua akun berbeda.
+- Saldo cukup: pengeluaran/transfer ditolak jika akun terkait akan minus. Edit/hapus pemasukan atau transfer serta perubahan saldo awal juga diperiksa. Pemeriksaan server memakai rupiah presisi BIGINT; trigger database mengunci akun agar penulisan bersamaan tidak melewati batas saldo.
 - Riwayat transaksi: pencarian judul/catatan, filter jenis/kategori/akun/bulan/rentang tanggal, urut nominal/tanggal, pagination 25 item.
 - Kategori bawaan/kustom: tambah/edit/arsip/aktifkan melalui Pengaturan. Nama unik per pemilik dan jenis, case insensitive. Perubahan jenis kategori yang sudah direferensikan ditolak database.
 - Keuangan: ringkasan bulan terpilih, grafik arus kas dengan tabel angka alternatif, kategori pengeluaran, saldo akun, transaksi periode terpilih.
@@ -73,6 +74,20 @@ Aplikasi menampilkan pesan khusus untuk limit email, terlalu banyak request, ala
 - UI responsif, sidebar collapse/drawer, bottom navigation mobile, modal native dengan focus management, label input dan error inline, loading, empty/error/retry state, toast, disabled submit, dan konfirmasi hapus.
 
 ## Keputusan arsitektur
+
+### Aktivasi validasi saldo (perubahan 30 Oktober 2026)
+
+Jalankan **seluruh** isi [`supabase/migrations/202610300001_sufficient_balance.sql`](supabase/migrations/202610300001_sufficient_balance.sql) sekali di SQL Editor Supabase, setelah migration awal; kemudian deploy source terbaru. Database yang sudah dipakai cukup menjalankan migration baru ini, tanpa mengulang migration lama. Instalasi baru juga perlu migration ini. Tidak ada environment variable baru.
+
+Contoh: saldo akun Rp100.000 menolak pengeluaran/transfer Rp200.000; Rp100.000 tetap diizinkan sehingga saldo menjadi 0. Batas mengikuti saldo ledger akun yang dipakai, bukan total gabungan akun atau filter bulan layar. Edit memperhitungkan pengembalian efek transaksi lama. Menghapus pemasukan atau transfer yang uangnya sudah digunakan dapat ditolak; koreksi transaksi terkait terlebih dahulu.
+
+Aturan ini menggantikan kebijakan PRD awal yang mengizinkan saldo negatif. Migration tidak menghapus transaksi, mengubah nominal, atau menormalkan saldo negatif lama. Akun lama yang minus boleh menerima pemasukan, pengembalian pengeluaran, atau koreksi yang memperbaiki saldo; defisit tidak boleh bertambah. Nama/status arsip dan catatan tetap dapat diperbarui. Saldo awal rekening lama dapat bertanda negatif selama perubahannya tidak membuat saldo akhir minus atau memperburuk defisit lama.
+
+Pemeriksaan server memberi pesan awal dan memeriksa data milik pengguna dari database. **Migration wajib diterapkan** untuk menegakkan aturan pada akses REST langsung dan penulisan bersamaan. Trigger `VOLATILE` membaca ledger setelah memperoleh lock akun dalam urutan UUID, lalu memperbarui versi baris akun untuk menolak snapshot writer lama pada isolation lebih ketat. Saldo tetap dihitung dari ledger, tanpa kolom saldo mutabel. [Snapshot PostgreSQL](https://www.postgresql.org/docs/current/xfunc-volatility.html), [isolasi transaksi](https://www.postgresql.org/docs/current/transaction-iso.html).
+
+Pengujian otomatis menggunakan PostgreSQL WASM/PGlite dan mock Server Actions, tanpa mengubah database hosted. Kontensi antarsesi PostgreSQL hosted belum diuji langsung.
+
+### Arsitektur aplikasi
 
 - Next.js **16.4.3**, React **19.3**, TypeScript, App Router, dan Tailwind 4 existing dipertahankan. Tidak ada `create-next-app` atau migrasi router.
 - Halaman dirender per request (`force-dynamic`), tanpa cache data privat lintas pengguna. `cacheComponents` starter dinonaktifkan agar boundary autentikasi tetap eksplisit. `React.cache` hanya menduplikasi query dalam request yang sama.

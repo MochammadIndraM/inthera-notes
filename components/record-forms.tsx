@@ -37,6 +37,7 @@ function Editor({
   return (
     <Modal
       title={title}
+      dialogClassName={entity === "task" ? "task-editor-modal" : undefined}
       trigger={
         trigger ??
         (id ? (
@@ -85,7 +86,8 @@ export function TaskEditor({
           <Field label="Deskripsi" name="description">
             <textarea
               name="description"
-              rows={3}
+              className="task-description-input"
+              rows={8}
               maxLength={5000}
               defaultValue={task?.description ?? ""}
               placeholder="Tambahkan konteks atau langkah kecil…"
@@ -187,7 +189,15 @@ export function TransactionEditor({
         ))}
       </div>
       <input type="hidden" name="type" value={type} />
-      <Field label="Nominal transaksi" name="amount">
+      <Field
+        label="Nominal transaksi"
+        name="amount"
+        hint={
+          type === "income"
+            ? undefined
+            : "Pengeluaran dan transfer tidak boleh melebihi saldo akun yang digunakan."
+        }
+      >
         <MoneyInput name="amount" value={transaction?.amount} />
       </Field>
       {type === "transfer" ? (
@@ -330,7 +340,7 @@ export function AccountEditor({
       <Field
         label="Saldo awal"
         name="opening_balance"
-        hint="Saldo awal bukan pemasukan. Nilai negatif diperbolehkan untuk koreksi saldo."
+        hint="Saldo awal bukan pemasukan. Akun baru dimulai dari 0 atau lebih; perubahan saldo awal tidak boleh membuat saldo akun negatif."
       >
         <MoneyInput
           name="opening_balance"

@@ -1283,6 +1283,22 @@ svg {
 .modal-body {
   padding: 22px 25px 25px;
 }
+.modal.task-editor-modal {
+  width: min(720px, calc(100vw - 28px));
+}
+.task-editor-modal .modal-header {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background: var(--surface);
+}
+.task-editor-modal .task-description-input {
+  min-height: 240px;
+  padding: 14px 16px;
+  font-size: 16px;
+  line-height: 1.7;
+  resize: vertical;
+}
 .form-stack {
   display: flex;
   flex-direction: column;
